@@ -48,9 +48,9 @@
 </template>
 
 <script>
-import axios from 'axios';
 import ModalProduto from '@/components/ModalProduto.vue';
 import CardProduto from '@/components/CardProduto.vue';
+import { api } from '../service/api';
 
 export default {
   components: {
@@ -77,7 +77,7 @@ export default {
         produto.preco = Number(produto.preco);
         delete produto.categoria;
 
-        const novoProduto = await axios.post('http://192.168.254.42:3000/produto', produto);
+        const novoProduto = await api.post('produto', produto);
         console.log(novoProduto.data);
         this.produtos.push(novoProduto.data);
         this.filtrar();
@@ -163,7 +163,7 @@ export default {
   },
 
   async mounted() {
-    const produtos = await axios.get('http://192.168.254.42:3000/produto');
+    const produtos = await api.get('produto');
     this.produtos = produtos.data;
     this.produtosFiltrados = produtos.data;
     this.filtrar();

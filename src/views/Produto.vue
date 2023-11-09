@@ -52,9 +52,9 @@
 </template>
 
 <script>
-import axios from 'axios';
 import ModalConfirmacao from '@/components/ModalConfirmacao.vue';
 import ModalProduto from '@/components/ModalProduto.vue';
+import { api } from '../service/api';
 
 export default {
   components: {
@@ -87,7 +87,7 @@ export default {
 
     async confirmaDeletarProduto() {
       try {
-        await axios.delete(`http://192.168.254.42:3000/produto/${this.produto.id}`);
+        await api.delete(`produto/${this.produto.id}`);
         this.dialogDeletar = false;
         this.$router.go(-1);
       } catch (error) {
@@ -106,7 +106,7 @@ export default {
         produtoSalvar.preco = Number(produtoSalvar.preco);
         delete produtoSalvar.categoria;
 
-        const response = await axios.put(`http://192.168.254.42:3000/produto/${produtoSalvar.id}`, produtoSalvar);
+        const response = await api.put(`produto/${produtoSalvar.id}`, produtoSalvar);
         this.produto = response.data;
         this.dialogAtualizar = false;
       } catch (error) {
@@ -116,7 +116,7 @@ export default {
   },
 
   async created() {
-    const produto = await axios.get(`http://192.168.254.42:3000/produto/${this.$route.params.id}`);
+    const produto = await api.get(`produto/${this.$route.params.id}`);
     this.produto = produto.data;
     if (this.produto) this.$emit('titulo', this.produto.nome);
   },

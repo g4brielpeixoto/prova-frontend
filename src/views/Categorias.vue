@@ -40,9 +40,9 @@
 </template>
 
 <script>
-import axios from 'axios';
 import ModalConfirmacao from '@/components/ModalConfirmacao.vue';
 import ModalAtualizacao from '@/components/ModalAtualizacao.vue';
+import { api } from '../service/api';
 
 export default {
   components: {
@@ -67,7 +67,7 @@ export default {
 
     async confimaDeletarCategoria() {
       try {
-        await axios.delete(`http://192.168.254.42:3000/categoria/${this.categoriaSelecionada.id}`);
+        await api.delete(`categoria/${this.categoriaSelecionada.id}`);
         this.categorias = this.categorias.filter(c => c.id !== this.categoriaSelecionada.id);
         this.dialogDeletar = false;
       } catch (error) {
@@ -84,13 +84,10 @@ export default {
       try {
         let categoria;
         if (this.categoriaSelecionada.id) {
-          categoria = await axios.put(
-            `http://192.168.254.42:3000/categoria/${this.categoriaSelecionada.id}`,
-            this.categoriaSelecionada,
-          );
+          categoria = await api.put(`categoria/${this.categoriaSelecionada.id}`, this.categoriaSelecionada);
           this.categorias = this.categorias.map(c => (c.id === this.categoriaSelecionada.id ? categoria.data : c));
         } else {
-          categoria = await axios.post('http://192.168.254.42:3000/categoria', this.categoriaSelecionada);
+          categoria = await api.post('categoria', this.categoriaSelecionada);
           this.categorias.push(categoria.data);
         }
         this.dialogAtualizar = false;
@@ -107,7 +104,7 @@ export default {
   },
 
   async mounted() {
-    const response = await axios.get('http://192.168.254.42:3000/categoria');
+    const response = await api.get('categoria');
     this.categorias = response.data;
   },
 };
